@@ -1,16 +1,45 @@
-<h1>Article Details</h1>
-<p><%= @article.title %></p>
-<p><%= @article.body %></p>
+<h1><%= @article.title %></h1>
 
-<%= link_to 'Update Article', edit_article_path(@article) %>
+<p><%= @article.body %></p>
 
 <ul>
   <li><%= link_to "Edit", edit_article_path(@article) %></li>
-  Buggy
   <li><%= link_to "Destroy", article_path(@article), data: {
                     turbo_method: :delete,
                     turbo_confirm: "Are you sure?"
                   } %></li>
+  <li><%= button_to "Destroy", @article, method: :delete, form: { data: {turbo_confirm: 'Are you sure?'} } %></li>
 </ul>
 
- <%= button_to "Destroy", @article, method: :delete, form: { data: {turbo_confirm: 'Are you sure?'} } %>
+<hr>
+
+<h2>Comments</h2>
+<% @article.comments.each do |comment| %>
+  <p>
+    <strong>Commenter:</strong>
+    <%= comment.commenter %>
+  </p>
+
+  <p>
+    <strong>Comment:</strong>
+    <%= comment.body %>
+  </p>
+  <%= button_to "Destroy Comment", [@article, comment], method: :delete, form: { data: {turbo_confirm: 'Are you sure?'} } %>
+<% end %>
+
+<hr>
+
+<h2>Add a comment:</h2>
+<%= form_with model: [ @article, @article.comments.build ] do |form| %>
+  <p>
+    <%= form.label :commenter %><br>
+    <%= form.text_field :commenter %>
+  </p>
+  <p>
+    <%= form.label :body %><br>
+    <%= form.text_area :body %>
+  </p>
+  <p>
+    <%= form.submit %>
+  </p>
+<% end %>
